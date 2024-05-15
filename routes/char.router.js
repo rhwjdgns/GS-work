@@ -9,15 +9,20 @@ router.post("/char", async (req, res, next) => {
   const { name } = req.body;
 
   try {
-    const schema = Joi.object({
+    const createdCharSchema = Joi.object({
       name: Joi.string().required(),
     });
 
-    const validationResult = schema.validate(req.body);
-    if (validationResult.error) {
+    const validation = await createdCharSchema.validateAsync(req.body);
+
+    const {value} = validation
+
+    if (!value) {
       return res
         .status(400)
-        .json({ error: validationResult.error.details[0].message });
+        .json({ 
+            errorMessage: "(vlaue) 데이터가 존재하지 않습니다.",
+        });
     }
 
     // 중복된 이름의 캐릭터가 있는지 확인
@@ -29,7 +34,7 @@ router.post("/char", async (req, res, next) => {
     }
 
     // MongoDB에 새로운 캐릭터 생성
-    const newCharacter = new Character({ name });
+    const newCharacter = new Character({ name })
     await newCharacter.save();
 
     res
