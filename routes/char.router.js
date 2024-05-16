@@ -57,4 +57,43 @@ router.post("/char", async (req, res, next) => {
   }
 });
 
+// GET /api/characters
+router.get("/characters", async (req, res) => {
+  try {
+    // MongoDB에서 모든 캐릭터를 조회합니다.
+    const characters = await Character.find();
+
+    // 조회된 캐릭터 목록을 클라이언트에게 반환합니다.
+    res.status(200).json({ characters });
+  } catch (error) {
+    // 에러가 발생한 경우 서버 에러를 반환합니다.
+    console.error("캐릭터 조회 중 에러:", error);
+    res.status(500).json({ error: "서버 에러 발생" });
+  }
+});
+
+// DELETE
+router.delete("/characters/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // MongoDB에서 해당 ID를 가진 캐릭터를 찾아 삭제합니다.
+    const deletedCharacter = await Character.findByIdAndDelete(id);
+
+    if (!deletedCharacter) {
+      // 삭제된 캐릭터가 없을 경우
+      return res
+        .status(404)
+        .json({ error: "삭제할 캐릭터를 찾을 수 없습니다." });
+    }
+
+    // 삭제 성공 시 응답
+    res.status(200).json({ message: "캐릭터가 성공적으로 삭제되었습니다." });
+  } catch (error) {
+    // 서버 에러 처리
+    console.error("캐릭터 삭제 중 에러:", error);
+    res.status(500).json({ error: "서버 에러 발생" });
+  }
+});
+
 export default router;
