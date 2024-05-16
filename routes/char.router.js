@@ -1,15 +1,28 @@
+// char.router.js
+
 import express from "express";
 import Joi from "joi";
+import {
+  Character,
+  createCharacter,
+  isConnected,
+  connect,
+} from "../schemas/database.js";
 
 const router = express.Router();
 
-// POST /api/chars
 router.post("/char", async (req, res, next) => {
   const { name } = req.body;
 
   try {
+    // Database 연결 확인
+    if (!isConnected()) {
+      await connect(); // 연결되어 있지 않다면 데이터베이스에 연결
+    }
+
     const createdCharSchema = Joi.object({
       name: Joi.string().required(),
+      value: Joi.string().allow(),
     });
 
     const validation = await createdCharSchema.validateAsync(req.body);
@@ -32,12 +45,12 @@ router.post("/char", async (req, res, next) => {
     }
 
     // MongoDB에 새로운 캐릭터 생성
-    const newCharacter = new Character({ name });
-    await newCharacter.save();
+    const newCharacterId = await createCharacter(name);
 
-    res
-      .status(201)
-      .json({ message: "캐릭터가 생성되었습니다.", character: newCharacter });
+    res.status(201).json({
+      message: "캐릭터가 생성되었습니다.",
+      character_id: newCharacterId,
+    });
   } catch (error) {
     console.error("캐릭터 생성 중 에러:", error);
     res.status(500).json({ error: "서버 에러 발생" });
