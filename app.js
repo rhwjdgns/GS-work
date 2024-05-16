@@ -1,6 +1,6 @@
 import express from "express";
 import connect from "./schemas/index.js";
-import todosRouter from "./routes/todos.router.js";
+import charrouter from "./routes/char.router.js";
 import errorHandlerMiddleware from "./middlewares/error-handler.middleware.js";
 
 const app = express();
@@ -28,7 +28,7 @@ router.get("/", (req, res) => {
 });
 
 // 미들웨어 5
-app.use("/api", [router, todosRouter]);
+app.use("/api", [router, charrouter]);
 
 // 에러 처리 미들웨어를 등록한다.
 app.use(errorHandlerMiddleware);

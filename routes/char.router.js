@@ -1,6 +1,5 @@
 import express from "express";
 import Joi from "joi";
-import Character from "../models/Character.js";
 
 const router = express.Router();
 
@@ -15,18 +14,17 @@ router.post("/char", async (req, res, next) => {
 
     const validation = await createdCharSchema.validateAsync(req.body);
 
-    const {value} = validation
+    const { value } = validation;
 
     if (!value) {
-      return res
-        .status(400)
-        .json({ 
-            errorMessage: "(vlaue) 데이터가 존재하지 않습니다.",
-        });
+      return res.status(400).json({
+        errorMessage: "(value) 데이터가 존재하지 않습니다.",
+      });
     }
 
     // 중복된 이름의 캐릭터가 있는지 확인
     const existingCharacter = await Character.findOne({ name });
+
     if (existingCharacter) {
       return res
         .status(400)
@@ -34,7 +32,7 @@ router.post("/char", async (req, res, next) => {
     }
 
     // MongoDB에 새로운 캐릭터 생성
-    const newCharacter = new Character({ name })
+    const newCharacter = new Character({ name });
     await newCharacter.save();
 
     res

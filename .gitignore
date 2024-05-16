@@ -1,8 +1,5 @@
-.env
-
-node_modules/
-
+.prettierrc.json
 package-lock.json
-
 package.json
-
+.env
+node_modules
