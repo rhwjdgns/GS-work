@@ -1,7 +1,5 @@
-// app.js
-
 import express from "express";
-import connect from "./schemas/index.js"; // connect 함수 가져오기
+import connect from "./schemas/index.js";
 import charrouter from "./routes/char.router.js";
 import errorHandlerMiddleware from "./middlewares/error-handler.middleware.js";
 

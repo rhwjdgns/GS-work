@@ -1,5 +1,3 @@
-// schemas/index.js
-
 import mongoose from "mongoose";
 
 const connect = () => {
